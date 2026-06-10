@@ -1,19 +1,19 @@
 import datetime as dt
+import types
 
-import mlflow
-import mlflow.transformers
 from mlflow.tracking import MlflowClient
 
 from src.api.models.schemas import PredictResult
 
 MODEL_NAME = "distilbert-base-uncased-finetuned-sst-2-english"
 MODEL_ALIAS = "Production"
-MODEL_VERSION = MODEL_ALIAS  # exposed for routes; updated to numeric version after load
+MODEL_VERSION = MODEL_ALIAS  # updated to numeric version after load
 
 _classifier = None
 _loaded_at = None
 _loaded_version = None
 _client: MlflowClient | None = None
+_mlflow_transformers: types.ModuleType | None = None
 
 
 def _get_client() -> MlflowClient:
@@ -23,12 +23,21 @@ def _get_client() -> MlflowClient:
     return _client
 
 
+def _get_mlflow_transformers() -> types.ModuleType:
+    global _mlflow_transformers
+    if _mlflow_transformers is None:
+        import mlflow.transformers as _mt
+        _mlflow_transformers = _mt
+    return _mlflow_transformers
+
+
 def load_model() -> None:
     global _classifier, _loaded_at, _loaded_version, MODEL_VERSION
     client = _get_client()
+    transformers = _get_mlflow_transformers()
     try:
         model_uri = f"models:/{MODEL_NAME}@{MODEL_ALIAS}"
-        _classifier = mlflow.transformers.load_model(model_uri)
+        _classifier = transformers.load_model(model_uri)
         _loaded_at = dt.datetime.now()
         mv = client.get_model_version_by_alias(MODEL_NAME, MODEL_ALIAS)
         _loaded_version = mv.version
@@ -51,13 +60,16 @@ def reload_if_changed() -> None:
     except Exception as e:
         print(f"Error checking for model updates: {e}")
 
+
 def is_loaded() -> bool:
     return _classifier is not None
+
 
 def loaded_at() -> dt.datetime | None:
     if not is_loaded():
         return None
     return _loaded_at
+
 
 def predict(text: str) -> list[PredictResult]:
     if _classifier is None:
