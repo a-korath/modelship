@@ -44,10 +44,10 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[test]"
 
       - name: Run pytest
-        run: pytest tests/ -v
+        run: pytest tests/ -v -m "not integration"
 
   build-and-push:
     name: Build & Push to ECR

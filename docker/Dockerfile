@@ -5,7 +5,7 @@ WORKDIR /build
 
 COPY pyproject.toml .
 RUN pip install --upgrade pip && \
-    pip install --prefix=/install ".[dev]"
+    pip install --prefix=/install ".[ml]"
 
 # Stage 2: lean runtime image
 FROM python:3.11-slim AS runtime
