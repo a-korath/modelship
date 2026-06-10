@@ -1,10 +1,11 @@
-import mlflow
 import os
-from transformers import pipeline  
-import mlflow.transformers
-from mlflow.tracking import MlflowClient
-from transformers import pipeline
 import tempfile
+
+from transformers import pipeline
+
+import mlflow
+import mlflow.transformers
+
 ARTIFACT_ROOT = "/mlflow/artifacts"
 
 def register_model(model_name: str, model_path: str, tracking_uri: str) -> None:
@@ -28,7 +29,7 @@ def register_model(model_name: str, model_path: str, tracking_uri: str) -> None:
                 alias="Production",
                 version=res.version
             )
-            print(f"Model '{model_name}' registered successfully from path '{model_path}'.")
+            print(f"Model '{model_name}' registered from '{model_path}'.")
 
 
 if __name__ == "__main__":

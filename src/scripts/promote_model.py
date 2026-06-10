@@ -1,6 +1,7 @@
-from mlflow import MlflowClient
 import os
 import sys
+
+from mlflow import MlflowClient
 
 
 def promote_model(model_name: str, model_version: str) -> None:

@@ -1,4 +1,5 @@
 import pytest
+
 from src.api.models import ml_model
 
 

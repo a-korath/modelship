@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from src.api.middleware.auth import validate_api_key, key_db, APIKey
+
+from src.api.middleware.auth import APIKey, key_db, validate_api_key
 
 router = APIRouter()
 @router.post("/generate_key", response_model=str)

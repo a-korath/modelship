@@ -1,12 +1,9 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
+from src.api.models.ml_model import load_model
 from src.api.routes import health, model_info, predict
-
-from src.api.models.ml_model import reload_if_changed, load_model
-
-
-
-
 
 
 @asynccontextmanager

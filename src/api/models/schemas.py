@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, field_validator
 import datetime
+
+from pydantic import BaseModel, Field, field_validator
 
 prompt_injection_patterns = {
     "ignore previous instructions",
@@ -21,14 +22,14 @@ class PredictRequest(BaseModel):
     @field_validator("text")
     def text_byte_length(cls, v):
         if len(v.encode('utf-8')) > 2048:
-            raise ValueError("Text must be less than or equal to 2048 bytes when encoded in UTF-8")
+            raise ValueError("Text must be <= 2048 bytes when encoded as UTF-8")
         return v
     @field_validator("text")
     def validate_prompt_injection(cls, v):
         lower_v = v.lower()
         for pattern in prompt_injection_patterns:
             if pattern in lower_v:
-                raise ValueError(f"Input contains potential prompt injection pattern")
+                raise ValueError("Input contains potential prompt injection pattern")
         return v
 
 class PredictResult(BaseModel):

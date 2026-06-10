@@ -1,6 +1,9 @@
-from src.api.main import app
-import src.api.models.ml_model
 from fastapi.testclient import TestClient
+
+import src.api.models.ml_model
+from src.api.main import app
+
+
 def test_health():
 
     # Load the model

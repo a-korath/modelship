@@ -1,9 +1,8 @@
 from fastapi import APIRouter, HTTPException
+
 from src.api.models import ml_model
-from src.api.models.ml_model import MODEL_NAME, loaded_at, is_loaded
+from src.api.models.ml_model import MODEL_NAME, is_loaded, loaded_at
 from src.api.models.schemas import ModelInfoResponse
-
-
 
 router = APIRouter()
 @router.get("/model/info", response_model=ModelInfoResponse)

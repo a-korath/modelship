@@ -1,11 +1,14 @@
 import datetime as dt
 import secrets
-from fastapi import HTTPException, status, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 
 class APIKey:
-    def __init__(self, created_at: dt.datetime, key: str, role: str, is_active: bool = True):
+    def __init__(
+        self, created_at: dt.datetime, key: str, role: str, is_active: bool = True
+    ):
         self.created_at = created_at
         self.key = key
         self.role = role
@@ -16,7 +19,9 @@ class InMemoryAPIKeyStore:
         self.keys = {}
     
     def generate_key(self, role: str) -> APIKey:
-        new_key = APIKey(created_at=dt.datetime.now(), key=secrets.token_urlsafe(32), role=role)
+        new_key = APIKey(
+            created_at=dt.datetime.now(), key=secrets.token_urlsafe(32), role=role
+        )
         self.add_key(new_key)
         return new_key
 
@@ -37,8 +42,13 @@ class InMemoryAPIKeyStore:
 key_db = InMemoryAPIKeyStore()
 auth_scheme = HTTPBearer()
 
-def validate_api_key(api_key: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> APIKey:
+def validate_api_key(
+    api_key: HTTPAuthorizationCredentials = Depends(auth_scheme),
+) -> APIKey:
     key = key_db.get_key(api_key.credentials)
     if not key:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or inactive API key")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or inactive API key",
+        )
     return key

@@ -1,6 +1,8 @@
-from src.api.main import app
-import src.api.models.ml_model
 from fastapi.testclient import TestClient
+
+import src.api.models.ml_model
+from src.api.main import app
+
 
 def test_predict():
     # Load the model
@@ -14,7 +16,7 @@ def test_predict():
     data = response.json()
     assert "predictions" in data
     assert len(data["predictions"]) > 0
-    assert data["predictions"][0]["label"] == "POSITIVE" or data["predictions"][0]["label"] == "NEGATIVE"
+    assert data["predictions"][0]["label"] in ("POSITIVE", "NEGATIVE")
     assert 0.0 <= data["predictions"][0]["score"] <= 1.0
     assert "model_version" in data
     assert data["model_version"] == "1.0.0"
