@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+# mlflow[server] pulls in the full server stack (flask, gunicorn, sqlalchemy,
+# alembic, querystring-parser, etc.) so we don't have to chase missing deps
+# one CrashLoopBackOff at a time the way mlflow-skinny[db] forces us to.
+RUN pip install --no-cache-dir mlflow[server]==3.12.0
+
+EXPOSE 5000
+
+ENV PYTHONMALLOC=malloc
+ENV MALLOC_ARENA_MAX=2
+ENV MLFLOW_ENABLE_ASYNC_LOGGING=false
+
+# No CMD: the K8s manifest (k8s/mlflow-deployment.yaml) supplies `command:`
+# which overrides any CMD here. Keeping runtime args in one place avoids
+# drift between the Dockerfile and the deployment.

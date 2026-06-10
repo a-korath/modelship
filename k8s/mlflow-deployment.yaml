@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modelship-mlflow
+  labels:
+    app: modelship-mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: modelship-mlflow
+  template:
+    metadata:
+      labels:
+        app: modelship-mlflow
+    spec:
+      containers:
+        - name: modelship-mlflow
+          image: mlflow-custom:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: mlflow-data
+              mountPath: /mlflow
+          command: ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "sqlite:////mlflow/mlflow.db", "--serve-artifacts", "--artifacts-destination", "file:///mlflow/artifacts", "--default-artifact-root", "mlflow-artifacts:/", "--workers", "1", "--allowed-hosts", "*"]
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            failureThreshold: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "400Mi"
+            limits:
+              cpu: "1"
+              memory: "1500Mi"
+      volumes:
+        - name: mlflow-data
+          persistentVolumeClaim:
+            claimName: mlflow-pvc
