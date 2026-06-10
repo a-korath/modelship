@@ -3,6 +3,7 @@ import datetime as dt
 import mlflow
 import mlflow.transformers
 from mlflow.tracking import MlflowClient
+
 from src.api.models.schemas import PredictResult
 
 MODEL_NAME = "distilbert-base-uncased-finetuned-sst-2-english"

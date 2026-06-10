@@ -1,10 +1,9 @@
 import os
 import tempfile
 
-from transformers import pipeline
-
 import mlflow
 import mlflow.transformers
+from transformers import pipeline
 
 ARTIFACT_ROOT = "/mlflow/artifacts"
 
