@@ -14,6 +14,7 @@ env/
 
 # MLflow — model weights and local DB do not belong in git
 mlflow/mlflow.db
+mlflow/mlflow.db.bak
 mlflow/artifacts/
 mlartifacts/
 mlflow.db
@@ -47,3 +48,6 @@ htmlcov/
 # Logs
 *.log
 logs/
+
+# Handoff documents — session-specific, not for repo
+handoffs/
