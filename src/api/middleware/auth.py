@@ -55,7 +55,12 @@ def create_jwt(subject: str, role: str) -> str:
 
 
 def decode_jwt(token: str) -> dict:
-    return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM], options={"require": ["exp", "sub"]})
+    return jwt.decode(
+        token,
+        JWT_SECRET,
+        algorithms=[JWT_ALGORITHM],
+        options={"require": ["exp", "sub"]},
+    )
 
 
 key_db = InMemoryAPIKeyStore()

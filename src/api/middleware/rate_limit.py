@@ -1,8 +1,10 @@
 
-from fastapi import Depends, HTTPException, status
 import time
 
+from fastapi import Depends, HTTPException, status
+
 from src.api.middleware.auth import APIKey, validate_api_key
+
 
 class TokenBucket:
     def __init__(self, capacity: int, refill_rate: float):

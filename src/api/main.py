@@ -3,10 +3,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-logger = logging.getLogger(__name__)
-
 from src.api.models.ml_model import load_model
 from src.api.routes import api_keys, health, model_info, predict
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager

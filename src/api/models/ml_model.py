@@ -4,9 +4,9 @@ import types
 
 from mlflow.tracking import MlflowClient
 
-logger = logging.getLogger(__name__)
-
 from src.api.models.schemas import PredictResult
+
+logger = logging.getLogger(__name__)
 
 MODEL_NAME = "distilbert-base-uncased-finetuned-sst-2-english"
 MODEL_ALIAS = "Production"
@@ -47,7 +47,7 @@ def load_model() -> None:
         _loaded_at = dt.datetime.now()
         mv = client.get_model_version_by_alias(MODEL_NAME, MODEL_ALIAS)
         _loaded_version = mv.version
-        logger.info("Model v%s (@%s) loaded at %s.", _loaded_version, MODEL_ALIAS, _loaded_at)
+        logger.info("Model v%s (@%s) loaded at %s.", _loaded_version, MODEL_ALIAS, _loaded_at)  # noqa: E501
     except Exception:
         logger.exception("Error loading model '%s' alias '%s'", MODEL_NAME, MODEL_ALIAS)
         raise
@@ -60,7 +60,7 @@ def reload_if_changed() -> None:
         mv = client.get_model_version_by_alias(MODEL_NAME, MODEL_ALIAS)
         latest_version = mv.version
         if _loaded_version != latest_version:
-            logger.info("New model version detected: %s. Reloading model...", latest_version)
+            logger.info("New model version detected: %s. Reloading model...", latest_version)  # noqa: E501
             load_model()
     except Exception:
         logger.exception("Error checking for model updates")
