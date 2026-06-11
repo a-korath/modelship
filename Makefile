@@ -23,7 +23,7 @@ test:
 	pytest tests/ -v
 
 build:
-	docker build -t $(ECR_URI):$(IMAGE_TAG) -t $(ECR_URI):latest -f docker/Dockerfile .
+	docker build -t $(ECR_URI):$(IMAGE_TAG) -f docker/Dockerfile .
 
 run:
 	docker-compose up
@@ -32,7 +32,6 @@ push: build
 	aws ecr get-login-password --region $(AWS_REGION) | \
 		docker login --username AWS --password-stdin $(AWS_ACCOUNT).dkr.ecr.$(AWS_REGION).amazonaws.com
 	docker push $(ECR_URI):$(IMAGE_TAG)
-	docker push $(ECR_URI):latest
 	@echo "Pushed → $(ECR_URI):$(IMAGE_TAG)"
 
 deploy:

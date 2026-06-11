@@ -36,19 +36,19 @@ spec:
                 key: MLFLOW_TRACKING_URI
           startupProbe:
             httpGet:
-              path: /health
+              path: /readyz
               port: 8000
             failureThreshold: 60
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /health
+              path: /healthz
               port: 8000
             periodSeconds: 30
             failureThreshold: 5
           readinessProbe:
             httpGet:
-              path: /health
+              path: /readyz
               port: 8000
             periodSeconds: 15
           resources:

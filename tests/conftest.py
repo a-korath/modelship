@@ -20,7 +20,6 @@ def mock_model(monkeypatch):
     )
     monkeypatch.setattr(ml_model, "_loaded_at", datetime.datetime(2026, 1, 1))
     monkeypatch.setattr(ml_model, "_loaded_version", "1")
-    monkeypatch.setattr(ml_model, "MODEL_VERSION", "1")
 
 
 @pytest.fixture

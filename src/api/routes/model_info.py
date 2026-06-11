@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from src.api.models import ml_model
-from src.api.models.ml_model import MODEL_NAME, is_loaded, loaded_at
+from src.api.models.ml_model import MODEL_NAME, is_loaded, loaded_at, loaded_version
 from src.api.models.schemas import ModelInfoResponse
 
 router = APIRouter()
@@ -11,7 +10,7 @@ def model_info() -> ModelInfoResponse:
         loaded = is_loaded()
         return ModelInfoResponse(
             model_name=MODEL_NAME,
-            model_version=ml_model.MODEL_VERSION,
+            model_version=loaded_version() or "unknown",
             model_loaded=loaded,
             loaded_at=loaded_at()
         )

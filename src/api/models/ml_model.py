@@ -1,17 +1,19 @@
 import datetime as dt
+import logging
 import types
 
 from mlflow.tracking import MlflowClient
+
+logger = logging.getLogger(__name__)
 
 from src.api.models.schemas import PredictResult
 
 MODEL_NAME = "distilbert-base-uncased-finetuned-sst-2-english"
 MODEL_ALIAS = "Production"
-MODEL_VERSION = MODEL_ALIAS  # updated to numeric version after load
 
 _classifier = None
 _loaded_at = None
-_loaded_version = None
+_loaded_version: str | None = None
 _client: MlflowClient | None = None
 _mlflow_transformers: types.ModuleType | None = None
 
@@ -31,8 +33,12 @@ def _get_mlflow_transformers() -> types.ModuleType:
     return _mlflow_transformers
 
 
+def loaded_version() -> str | None:
+    return _loaded_version
+
+
 def load_model() -> None:
-    global _classifier, _loaded_at, _loaded_version, MODEL_VERSION
+    global _classifier, _loaded_at, _loaded_version
     client = _get_client()
     transformers = _get_mlflow_transformers()
     try:
@@ -41,10 +47,9 @@ def load_model() -> None:
         _loaded_at = dt.datetime.now()
         mv = client.get_model_version_by_alias(MODEL_NAME, MODEL_ALIAS)
         _loaded_version = mv.version
-        MODEL_VERSION = mv.version
-        print(f"Model v{_loaded_version} (@{MODEL_ALIAS}) loaded at {_loaded_at}.")
-    except Exception as e:
-        print(f"Error loading model '{MODEL_NAME}' alias '{MODEL_ALIAS}': {e}")
+        logger.info("Model v%s (@%s) loaded at %s.", _loaded_version, MODEL_ALIAS, _loaded_at)
+    except Exception:
+        logger.exception("Error loading model '%s' alias '%s'", MODEL_NAME, MODEL_ALIAS)
         raise
 
 
@@ -55,10 +60,10 @@ def reload_if_changed() -> None:
         mv = client.get_model_version_by_alias(MODEL_NAME, MODEL_ALIAS)
         latest_version = mv.version
         if _loaded_version != latest_version:
-            print(f"New model version detected: {latest_version}. Reloading model...")
+            logger.info("New model version detected: %s. Reloading model...", latest_version)
             load_model()
-    except Exception as e:
-        print(f"Error checking for model updates: {e}")
+    except Exception:
+        logger.exception("Error checking for model updates")
 
 
 def is_loaded() -> bool:
